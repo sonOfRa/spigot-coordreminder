@@ -1,0 +1,13 @@
+name: CoordReminder
+main: de.slevermann.minecraft.coordreminder.CoordReminderPlugin
+description: Allows saving and recalling of coordinates
+version: 1.0-SNAPSHOT
+commands:
+  coord:
+    description: Interact with stored coordinates
+    usage: |
+      Usage:
+      /<command>: show current coordinates
+      /<command> list: list saved coordinates
+      /<command> set [name]: save current coordinates as [name]
+      /<command> get|delete [name]: get or delete coordinates saved as [name]
