@@ -10,4 +10,5 @@ commands:
       /<command>: show current coordinates
       /<command> list: list saved coordinates
       /<command> set [name]: save current coordinates as [name]
-      /<command> get|delete [name]: get or delete coordinates saved as [name]
+      /<command> get [name]: get coordinates saved as [name]
+      /<command> delete [name]: delete coordinates saved as [name]
