@@ -44,14 +44,14 @@ public class CoordReminderCommand implements CommandExecutor {
 
             Coordinate currentCoordinate = new Coordinate(sender.getLocation());
             if (args.length == 0) {
-                sender.sendMessage("Current coordinates: " + currentCoordinate);
+                sender.sendMessage("Current coordinates: " + currentCoordinate.coloredString());
                 return true;
             } else if (args.length == 1 && args[0].equals("list")) {
                 // List coordinate names saved for player
                 sender.sendMessage("List of saved coordinates: ");
 
                 for (Map.Entry<String, Coordinate> entry : coordinatesForSender.entrySet()) {
-                    sender.sendMessage(entry.getKey() + ": " + entry.getValue());
+                    sender.sendMessage(entry.getKey() + ": " + entry.getValue().coloredString());
                 }
                 return true;
             } else if (args.length == 2) {
@@ -63,7 +63,7 @@ public class CoordReminderCommand implements CommandExecutor {
                         if (coord == null) {
                             sender.sendMessage("No coordinate saved under that name");
                         } else {
-                            sender.sendMessage(coord.toString());
+                            sender.sendMessage(coord.coloredString());
                         }
                         return true;
                     case "set":
@@ -72,7 +72,7 @@ public class CoordReminderCommand implements CommandExecutor {
                         } else {
                             coordinatesForSender.put(name, currentCoordinate);
                             sender.sendMessage("Saved current location as '" + name + "':");
-                            sender.sendMessage(currentCoordinate.toString());
+                            sender.sendMessage(currentCoordinate.coloredString());
                         }
                         return true;
                     case "delete":
