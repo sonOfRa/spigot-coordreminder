@@ -12,3 +12,4 @@ server restarts and player disconnects
 - ```/coord set [name]``` stores the current coordinates as the given name
 - ```/coord get [name]``` gets the coordinates for the given name
 - ```/coord delete [name]``` deletes the coordinates for the given name
+- ```/coord clear``` deletes all coordinates for the current player

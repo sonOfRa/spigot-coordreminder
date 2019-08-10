@@ -46,14 +46,20 @@ public class CoordReminderCommand implements CommandExecutor {
             if (args.length == 0) {
                 sender.sendMessage("Current coordinates: " + currentCoordinate.coloredString());
                 return true;
-            } else if (args.length == 1 && args[0].equals("list")) {
-                // List coordinate names saved for player
-                sender.sendMessage("List of saved coordinates: ");
+            } else if (args.length == 1) {
+                if (args[0].equals("list")) {
+                    // List coordinate names saved for player
+                    sender.sendMessage("List of saved coordinates: ");
 
-                for (Map.Entry<String, Coordinate> entry : coordinatesForSender.entrySet()) {
-                    sender.sendMessage(entry.getKey() + ": " + entry.getValue().coloredString());
+                    for (Map.Entry<String, Coordinate> entry : coordinatesForSender.entrySet()) {
+                        sender.sendMessage(entry.getKey() + ": " + entry.getValue().coloredString());
+                    }
+                    return true;
+                } else if (args[0].equals("clear")) {
+                    sender.sendMessage("Deleting all saved coordinates");
+                    coordinatesForSender.clear();
+                    return true;
                 }
-                return true;
             } else if (args.length == 2) {
                 String name = args[1];
                 Coordinate coord = coordinatesForSender.get(name);

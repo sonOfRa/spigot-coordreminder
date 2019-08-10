@@ -12,3 +12,4 @@ commands:
       /<command> set [name]: save current coordinates as [name]
       /<command> get [name]: get coordinates saved as [name]
       /<command> delete [name]: delete coordinates saved as [name]
+      /<command> clear: delete all saved coordinates
