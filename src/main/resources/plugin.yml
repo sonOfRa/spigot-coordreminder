@@ -1,7 +1,7 @@
 name: CoordReminder
 main: de.slevermann.minecraft.coordreminder.CoordReminderPlugin
 description: Allows saving and recalling of coordinates
-version: 1.1.0
+version: 1.2.0
 author: sonOfRa
 commands:
   coord:

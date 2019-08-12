@@ -12,8 +12,9 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.util.Map;
-import java.util.UUID;
+import java.nio.file.*;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
@@ -21,8 +22,6 @@ import java.util.logging.Level;
 public class CoordReminderPlugin extends JavaPlugin {
 
     private CoordReminderCommand cmd = null;
-
-    private static final String DATA_LOCATION = "plugins/CoordReminder/";
 
     private static final String DATA_FILENAME = "coords.json";
 
@@ -34,9 +33,9 @@ public class CoordReminderPlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        saveDefaultConfig();
         if (createDataDir()) {
-            File dataFile = new File(DATA_LOCATION + DATA_FILENAME);
-
+            File dataFile = new File(getDataFolder().getAbsolutePath() + File.separator + DATA_FILENAME);
             if (!dataFile.exists()) {
                 getLogger().log(Level.WARNING, "Data file not found");
             } else {
@@ -66,11 +65,31 @@ public class CoordReminderPlugin extends JavaPlugin {
     @Override
     public void onDisable() {
         if (createDataDir()) {
-            try (FileWriter fw = new FileWriter(new File(DATA_LOCATION + DATA_FILENAME));
+            boolean dataWritten = false;
+            try (FileWriter fw = new FileWriter(new File(getDataFolder().getAbsolutePath() +
+                    File.separator + DATA_FILENAME));
                  JsonWriter writer = new JsonWriter(fw)) {
                 gson.toJson(cmd.getSavedCoordinates(), TYPE, writer);
+                dataWritten = true;
             } catch (JsonIOException | IOException e) {
                 getLogger().log(Level.WARNING, "Failed to write saved coordinate data", e);
+            }
+            int backupCount = getConfig().getInt("backups");
+            if (dataWritten && backupCount > 0) {
+                File backupDirectory = new File(getDataFolder().getAbsolutePath() + File.separator +
+                        "backups");
+                List<File> backups = Arrays.asList(backupDirectory.listFiles((file, s) -> s.startsWith("backup-coords")
+                        && s.endsWith(".json")));
+                deleteOldest(backups, backupCount - 1);
+                Path source = Paths.get(getDataFolder().getAbsolutePath() + File.separator + DATA_FILENAME);
+                SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-dd-HHmmss");
+                String fileName = "backup-coords-" + sdf.format(new Date()) + ".json";
+                Path target = backupDirectory.toPath().resolve(fileName);
+                try {
+                    Files.copy(source, target, StandardCopyOption.REPLACE_EXISTING);
+                } catch (IOException e) {
+                    getLogger().log(Level.WARNING, "Failed to write coordinate backup", e);
+                }
             }
         } else {
             getLogger().log(Level.INFO, "Data directory does not exist, not saving data.");
@@ -84,16 +103,37 @@ public class CoordReminderPlugin extends JavaPlugin {
      * @return true if the data dir exists (before or after trying to create it)
      */
     private boolean createDataDir() {
-        File dataDirectory = new File(DATA_LOCATION);
+        File dataDirectory = new File(getDataFolder().getAbsolutePath() + File.separator +
+                "backups");
+        boolean success = false;
         if (!dataDirectory.exists()) {
             if (!dataDirectory.mkdirs()) {
                 getLogger().log(Level.WARNING, "Failed to create data directory");
             } else {
-                return true;
+                success = true;
             }
         } else {
-            return true;
+            success = true;
         }
-        return false;
+
+        return success;
+    }
+
+    /**
+     * Given a list of files, delete as many old files as necessary to retain only the most recent files
+     *
+     * @param files    input list of files
+     * @param maxCount how many files to retain
+     */
+    private void deleteOldest(List<File> files, int maxCount) {
+        if (files.size() > maxCount) {
+            files.sort(Comparator.comparing(File::lastModified));
+            int deleteCount = files.size() - maxCount;
+            for (int i = 0; i < deleteCount; i++) {
+                if (!files.get(i).delete()) {
+                    getLogger().log(Level.WARNING, "Failed to delete backup file " + files.get(i).getAbsolutePath());
+                }
+            }
+        }
     }
 }

@@ -13,3 +13,8 @@ server restarts and player disconnects
 - ```/coord get [name]``` gets the coordinates for the given name
 - ```/coord delete [name]``` deletes the coordinates for the given name
 - ```/coord clear``` deletes all coordinates for the current player
+
+## Configuration
+There is a single configuration key, named ``backups``. It determines how many
+backup coordinate files are kept around (one is created on every server shutdown).
+If set to 0, no backups are kept.
