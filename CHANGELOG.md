@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0] 2019-08-12
+
+### Changed
+
+- JSON backend is now GSON, which is a dependency of Spigot anyhow,
+ saving a few Megabytes in plugin size
+
 ## [1.0.0] 2019-08-12
 
 ### Added

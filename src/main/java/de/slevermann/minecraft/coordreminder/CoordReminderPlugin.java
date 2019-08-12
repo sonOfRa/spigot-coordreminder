@@ -1,11 +1,17 @@
 package de.slevermann.minecraft.coordreminder;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.JsonIOException;
+import com.google.gson.reflect.TypeToken;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -20,7 +26,11 @@ public class CoordReminderPlugin extends JavaPlugin {
 
     private static final String DATA_FILENAME = "coords.json";
 
-    private ObjectMapper objectMapper = new ObjectMapper();
+    private static final Type TYPE = new TypeToken<ConcurrentHashMap<UUID, Map<String, Coordinate>>>() {
+    }.getType();
+
+    private Gson gson = new Gson();
+
 
     @Override
     public void onEnable() {
@@ -30,13 +40,16 @@ public class CoordReminderPlugin extends JavaPlugin {
             if (!dataFile.exists()) {
                 getLogger().log(Level.WARNING, "Data file not found");
             } else {
-                try {
-                    ConcurrentHashMap<UUID, Map<String, Coordinate>> savedCoords = objectMapper.readValue(dataFile,
-                            new TypeReference<ConcurrentHashMap<UUID, Map<String, Coordinate>>>() {
-                            });
-                    cmd = new CoordReminderCommand(savedCoords);
+                try (FileReader fr = new FileReader(dataFile);
+                     JsonReader reader = new JsonReader(fr)) {
+                    ConcurrentHashMap<UUID, Map<String, Coordinate>> savedCoords = gson.fromJson(reader, TYPE);
+                    if (savedCoords == null) {
+                        cmd = new CoordReminderCommand();
+                    } else {
+                        cmd = new CoordReminderCommand(savedCoords);
+                    }
                     getLogger().log(Level.INFO, "Loaded data successfully");
-                } catch (IOException e) {
+                } catch (IOException | JsonIOException e) {
                     getLogger().log(Level.WARNING, "Failed to read saved coordinate data", e);
                 }
             }
@@ -53,9 +66,10 @@ public class CoordReminderPlugin extends JavaPlugin {
     @Override
     public void onDisable() {
         if (createDataDir()) {
-            try {
-                objectMapper.writeValue(new File(DATA_LOCATION + DATA_FILENAME), cmd.getSavedCoordinates());
-            } catch (IOException e) {
+            try (FileWriter fw = new FileWriter(new File(DATA_LOCATION + DATA_FILENAME));
+                 JsonWriter writer = new JsonWriter(fw)) {
+                gson.toJson(cmd.getSavedCoordinates(), TYPE, writer);
+            } catch (JsonIOException | IOException e) {
                 getLogger().log(Level.WARNING, "Failed to write saved coordinate data", e);
             }
         } else {
