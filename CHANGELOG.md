@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.0] 2019-08-27
+
+### Added
+- Autocompletions for commands and coordinate names
+
 ## [1.2.0] 2019-08-12
 
 ### Added

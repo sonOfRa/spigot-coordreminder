@@ -1,18 +1,17 @@
 package de.slevermann.minecraft.coordreminder;
 
+import com.google.common.collect.ImmutableList;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
-public class CoordReminderCommand implements CommandExecutor {
+public class CoordReminderCommand implements TabExecutor {
 
     private ConcurrentHashMap<UUID, Map<String, Coordinate>> savedCoordinates;
 
@@ -96,5 +95,62 @@ public class CoordReminderCommand implements CommandExecutor {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public List<String> onTabComplete(CommandSender commandSender, Command command, String label, String[] args) {
+        if (commandSender instanceof Player) {
+            Player sender = (Player) commandSender;
+            UUID uuid = sender.getUniqueId();
+
+            List<String> commands = ImmutableList.of("clear", "delete", "get", "list", "set");
+
+            // Ensure that there is a Map for the command sender to avoid null checking later on
+            Map<String, Coordinate> coordinatesForSender = savedCoordinates.get(uuid);
+            if (coordinatesForSender == null) {
+                Map<String, Coordinate> newCoords = new HashMap<>();
+                savedCoordinates.put(uuid, newCoords);
+                coordinatesForSender = newCoords;
+            }
+
+            if (args.length == 0) {
+                return commands;
+            }
+
+            if (args.length == 1) {
+                String arg = args[0];
+                if (arg.equals("get") || arg.equals("delete")) {
+                    return new ArrayList<>(coordinatesForSender.keySet());
+                } else if (!commands.contains(arg)) {
+                    // We don't have a full command, so try to find out if we have a valid partial command
+                    List<String> completions = new ArrayList<>();
+                    for (String c : commands) {
+                        if (c.startsWith(arg)) {
+                            completions.add(c);
+                        }
+                    }
+                    return completions;
+                }
+            }
+
+            if (args.length == 2) {
+                String commandName = args[0];
+                if (commandName.equals("get") || commandName.equals("delete")) {
+                    String partialCoordinate = args[1];
+
+                    List<String> completions = new ArrayList<>();
+
+                    for (String coordinateName : coordinatesForSender.keySet()) {
+                        if (coordinateName.startsWith(partialCoordinate)) {
+                            completions.add(coordinateName);
+                        }
+                    }
+                    return completions;
+                }
+            }
+            return Collections.emptyList();
+        } else {
+            return Collections.emptyList();
+        }
     }
 }

@@ -59,6 +59,7 @@ public class CoordReminderPlugin extends JavaPlugin {
             getLogger().log(Level.INFO, "Loaded plugin without saved data");
         }
         this.getCommand("coord").setExecutor(cmd);
+        this.getCommand("coord").setTabCompleter(cmd);
         super.onEnable();
     }
 
