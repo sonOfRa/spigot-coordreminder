@@ -17,4 +17,5 @@ server restarts and player disconnects
 ## Configuration
 There is a single configuration key, named ``backups``. It determines how many
 backup coordinate files are kept around (one is created on every server shutdown).
-If set to 0, no backups are kept.
+If set to 0, no backups are kept. The default value is 2. This can be adjusted at
+build time with ```mvn -Dbackups=n package``` to store ``n`` backups instead.
