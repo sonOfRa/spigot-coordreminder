@@ -10,7 +10,9 @@ server restarts and player disconnects
 - ```/coord``` shows the current coordinates
 - ```/coord list``` shows saved coordinates for the current player
 - ```/coord set [name]``` stores the current coordinates as the given name
+- ```/coord set [name] [x] [y] [z]``` stores coordinate x, y, z as name
 - ```/coord get [name]``` gets the coordinates for the given name
+- ```/coord share [name]``` shares the coordinates for the given name to chat
 - ```/coord delete [name]``` deletes the coordinates for the given name
 - ```/coord clear``` deletes all coordinates for the current player
 

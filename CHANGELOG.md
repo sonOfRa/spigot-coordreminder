@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.4.0] 2019-09-25
+
+### Added
+- Enable coordinate sharing to chat for all players
+- Coordinates in the current world can now be set with X, Y, Z coordinates
+
 ## [1.3.0] 2019-08-27
 
 ### Added

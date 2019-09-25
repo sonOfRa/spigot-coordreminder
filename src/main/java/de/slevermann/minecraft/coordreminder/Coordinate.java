@@ -19,6 +19,13 @@ public class Coordinate {
     private int z;
     private World.Environment environment;
 
+    public Coordinate(World.Environment environment, int x, int y, int z) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.environment = environment;
+    }
+
     public Coordinate(Location location) {
         this.x = location.getBlockX();
         this.y = location.getBlockY();

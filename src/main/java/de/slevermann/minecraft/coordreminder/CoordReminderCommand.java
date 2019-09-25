@@ -62,7 +62,7 @@ public class CoordReminderCommand implements TabExecutor {
             } else if (args.length == 2) {
                 String name = args[1];
                 Coordinate coord = coordinatesForSender.get(name);
-                // Either "get name", "set name" or "delete name"
+                // Either "get name", "set name", "delete name" or "share name"
                 switch (args[0]) {
                     case "get":
                         if (coord == null) {
@@ -88,6 +88,47 @@ public class CoordReminderCommand implements TabExecutor {
                             sender.sendMessage("Removed coordinate '" + name + "'");
                         }
                         return true;
+                    case "share":
+                        if (coord == null) {
+                            sender.sendMessage("No coordinate saved under that name");
+                        } else {
+                            Bukkit.broadcastMessage(((Player) commandSender).getDisplayName() + " sent coordinate " + name + ":");
+                            Bukkit.broadcastMessage(coord.coloredString());
+                        }
+                        return true;
+                }
+            } else if (args.length == 5) {
+                String name = args[1];
+                if (args[0].equals("set")) {
+                    if (coordinatesForSender.containsKey(name)) {
+                        sender.sendMessage("There already is a coordinate under that name. Please delete first.");
+                    } else {
+                        int x, y, z;
+                        try {
+                            x = Integer.parseInt(args[2]);
+                        } catch (NumberFormatException e) {
+                            sender.sendMessage("Invalid X coordinate");
+                            return true;
+                        }
+                        try {
+                            y = Integer.parseInt(args[3]);
+                        } catch (NumberFormatException e) {
+                            sender.sendMessage("Invalid Y coordinate");
+                            return true;
+                        }
+                        try {
+                            z = Integer.parseInt(args[4]);
+                        } catch (NumberFormatException e) {
+                            sender.sendMessage("Invalid Z coordinate");
+                            return true;
+                        }
+
+                        Coordinate coord = new Coordinate(sender.getLocation().getWorld().getEnvironment(), x, y, z);
+                        coordinatesForSender.put(name, coord);
+                        sender.sendMessage("Saved location as '" + name + "':");
+                        sender.sendMessage(coord.coloredString());
+                    }
+                    return true;
                 }
             }
         } else {
@@ -103,7 +144,7 @@ public class CoordReminderCommand implements TabExecutor {
             Player sender = (Player) commandSender;
             UUID uuid = sender.getUniqueId();
 
-            List<String> commands = ImmutableList.of("clear", "delete", "get", "list", "set");
+            List<String> commands = ImmutableList.of("clear", "delete", "get", "list", "set", "share");
 
             // Ensure that there is a Map for the command sender to avoid null checking later on
             Map<String, Coordinate> coordinatesForSender = savedCoordinates.get(uuid);
@@ -119,7 +160,7 @@ public class CoordReminderCommand implements TabExecutor {
 
             if (args.length == 1) {
                 String arg = args[0];
-                if (arg.equals("get") || arg.equals("delete")) {
+                if (arg.equals("get") || arg.equals("delete") || arg.equals("share")) {
                     return new ArrayList<>(coordinatesForSender.keySet());
                 } else if (!commands.contains(arg)) {
                     // We don't have a full command, so try to find out if we have a valid partial command
@@ -135,7 +176,7 @@ public class CoordReminderCommand implements TabExecutor {
 
             if (args.length == 2) {
                 String commandName = args[0];
-                if (commandName.equals("get") || commandName.equals("delete")) {
+                if (commandName.equals("get") || commandName.equals("delete") || commandName.equals("share")) {
                     String partialCoordinate = args[1];
 
                     List<String> completions = new ArrayList<>();
