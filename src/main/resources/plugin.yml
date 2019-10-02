@@ -9,10 +9,11 @@ commands:
     usage: |
       Usage:
       /<command>: show current coordinates
+      /<command> clear: delete all saved coordinates
+      /<command> delete [name]: delete coordinates saved as [name]
+      /<command> get [name]: get coordinates saved as [name]
       /<command> list: list saved coordinates
       /<command> set [name]: save current coordinates as [name]
       /<command> set [name] [x] [y] [z]: save coordinate x, y, z as [name]
-      /<command> get [name]: get coordinates saved as [name]
       /<command> share [name]: share coordinates saved as [name] to chat
-      /<command> delete [name]: delete coordinates saved as [name]
-      /<command> clear: delete all saved coordinates
+      /<command> tp [name]: teleport to coordinate [name]

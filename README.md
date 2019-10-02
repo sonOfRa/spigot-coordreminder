@@ -8,13 +8,14 @@ server restarts and player disconnects
 
 ## Usage
 - ```/coord``` shows the current coordinates
+- ```/coord clear``` deletes all coordinates for the current player
+- ```/coord delete [name]``` deletes the coordinates for the given name
+- ```/coord get [name]``` gets the coordinates for the given name
 - ```/coord list``` shows saved coordinates for the current player
 - ```/coord set [name]``` stores the current coordinates as the given name
 - ```/coord set [name] [x] [y] [z]``` stores coordinate x, y, z as name
-- ```/coord get [name]``` gets the coordinates for the given name
 - ```/coord share [name]``` shares the coordinates for the given name to chat
-- ```/coord delete [name]``` deletes the coordinates for the given name
-- ```/coord clear``` deletes all coordinates for the current player
+- ```/coord tp [name]``` teleports to the given coordinates
 
 ## Configuration
 There is a single configuration key, named ``backups``. It determines how many

@@ -6,6 +6,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerTeleportEvent;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -96,6 +97,13 @@ public class CoordReminderCommand implements TabExecutor {
                             Bukkit.broadcastMessage(coord.coloredString());
                         }
                         return true;
+                    case "tp":
+                        if (coord == null) {
+                            sender.sendMessage("No coordinate saved under that name");
+                        }
+                        sender.teleport(coord.getLocation(), PlayerTeleportEvent.TeleportCause.COMMAND);
+                        sender.sendMessage("Teleported to " + name);
+                        return true;
                 }
             } else if (args.length == 5) {
                 String name = args[1];
@@ -123,7 +131,7 @@ public class CoordReminderCommand implements TabExecutor {
                             return true;
                         }
 
-                        Coordinate coord = new Coordinate(sender.getLocation().getWorld().getEnvironment(), x, y, z);
+                        Coordinate coord = new Coordinate(sender.getLocation().getWorld().getUID(), x, y, z);
                         coordinatesForSender.put(name, coord);
                         sender.sendMessage("Saved location as '" + name + "':");
                         sender.sendMessage(coord.coloredString());
@@ -144,7 +152,7 @@ public class CoordReminderCommand implements TabExecutor {
             Player sender = (Player) commandSender;
             UUID uuid = sender.getUniqueId();
 
-            List<String> commands = ImmutableList.of("clear", "delete", "get", "list", "set", "share");
+            List<String> commands = ImmutableList.of("clear", "delete", "get", "list", "set", "share", "tp");
 
             // Ensure that there is a Map for the command sender to avoid null checking later on
             Map<String, Coordinate> coordinatesForSender = savedCoordinates.get(uuid);
@@ -160,7 +168,7 @@ public class CoordReminderCommand implements TabExecutor {
 
             if (args.length == 1) {
                 String arg = args[0];
-                if (arg.equals("get") || arg.equals("delete") || arg.equals("share")) {
+                if (arg.equals("get") || arg.equals("delete") || arg.equals("share") || arg.equals("tp")) {
                     return new ArrayList<>(coordinatesForSender.keySet());
                 } else if (!commands.contains(arg)) {
                     // We don't have a full command, so try to find out if we have a valid partial command
@@ -176,7 +184,8 @@ public class CoordReminderCommand implements TabExecutor {
 
             if (args.length == 2) {
                 String commandName = args[0];
-                if (commandName.equals("get") || commandName.equals("delete") || commandName.equals("share")) {
+                if (commandName.equals("get") || commandName.equals("delete") || commandName.equals("share") ||
+                        commandName.equals("tp")) {
                     String partialCoordinate = args[1];
 
                     List<String> completions = new ArrayList<>();

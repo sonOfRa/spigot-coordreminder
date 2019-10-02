@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.5.0] 2019-10-02
+
+### Added
+- Players can now teleport to locations they have saved
+
 ## [1.4.0] 2019-09-25
 
 ### Added

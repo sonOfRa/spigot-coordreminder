@@ -1,6 +1,7 @@
 package de.slevermann.minecraft.coordreminder;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonIOException;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
@@ -28,7 +29,10 @@ public class CoordReminderPlugin extends JavaPlugin {
     private static final Type TYPE = new TypeToken<ConcurrentHashMap<UUID, Map<String, Coordinate>>>() {
     }.getType();
 
-    private Gson gson = new Gson();
+    private Gson gson = new GsonBuilder()
+            .registerTypeAdapter(Coordinate.class, new CoordinateDeserializer())
+            .excludeFieldsWithoutExposeAnnotation()
+            .create();
 
 
     @Override
