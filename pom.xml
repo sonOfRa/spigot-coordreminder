@@ -6,7 +6,7 @@
 
     <groupId>de.slevermann.minecraft</groupId>
     <artifactId>coordreminder</artifactId>
-    <version>1.6.2</version>
+    <version>1.6.3</version>
     <description>Allows saving and recalling of coordinates</description>
 
     <repositories>
@@ -18,7 +18,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.release>16</maven.compiler.release>
+        <maven.compiler.release>17</maven.compiler.release>
         <backups>2</backups>
     </properties>
 
@@ -26,13 +26,13 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.17.1-R0.1-SNAPSHOT</version>
+            <version>1.18.1-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.20</version>
+            <version>1.18.22</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
